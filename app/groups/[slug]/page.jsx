@@ -4,8 +4,10 @@ import remarkGfm from 'remark-gfm';
 import { CATEGORIES } from '@/lib/categories';
 import { getGroup } from '@/lib/groups';
 import { listAllRules } from '@/lib/rules';
+import { githubBlobUrl } from '@/lib/docs';
 import NotFoundView from '../../NotFoundView';
 import DeleteGroupButton from '../../DeleteGroupButton';
+import GitHubLinkButton from '../../GitHubLinkButton';
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -181,6 +183,7 @@ export default async function GroupPage({ params }) {
         <Link className="btn secondary" href={`/groups/${slug}/edit`}>
           Edit
         </Link>
+        <GitHubLinkButton href={githubBlobUrl(g.path)} label="View on GitHub" />
         <DeleteGroupButton slug={slug} name={g.name} />
       </div>
 

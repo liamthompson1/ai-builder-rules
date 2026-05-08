@@ -1,6 +1,7 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { fetchDoc, githubBlobUrl } from '@/lib/docs';
+import GitHubLinkButton from '../GitHubLinkButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,17 +18,12 @@ export default async function AgentsPage() {
         <div className="page-eyebrow">🤖 For AI consumers</div>
         <h1 className="page-title plain">AGENTS.md</h1>
         <p className="page-subtitle">
-          The contract an AI agent gets when handed this repo. Renders the
-          live file from the GitHub repo —{' '}
-          <a
-            className="text-link"
-            href={githubBlobUrl('AGENTS.md')}
-            target="_blank"
-            rel="noreferrer"
-          >
-            view source on GitHub →
-          </a>
+          The contract an AI agent gets when handed this repo. The live file
+          renders below.
         </p>
+        <div style={{ marginTop: 14 }}>
+          <GitHubLinkButton href={githubBlobUrl('AGENTS.md')} label="View on GitHub" />
+        </div>
       </header>
       <article className="rule-body">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>

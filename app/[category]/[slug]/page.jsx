@@ -4,8 +4,10 @@ import remarkGfm from 'remark-gfm';
 import { getCategory } from '@/lib/categories';
 import { getRule } from '@/lib/rules';
 import { listGroupsContainingRule } from '@/lib/groups';
+import { githubBlobUrl } from '@/lib/docs';
 import NotFoundView from '../../NotFoundView';
 import DeleteRuleButton from '../../DeleteRuleButton';
+import GitHubLinkButton from '../../GitHubLinkButton';
 
 export async function generateMetadata({ params }) {
   const { category, slug } = await params;
@@ -179,6 +181,7 @@ export default async function RulePage({ params }) {
         <Link className="btn secondary" href={`/${category}/${slug}/edit`}>
           Edit
         </Link>
+        <GitHubLinkButton href={githubBlobUrl(meta.path)} label="View on GitHub" />
         <DeleteRuleButton
           category={category}
           slug={slug}

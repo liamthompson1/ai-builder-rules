@@ -1,6 +1,7 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { fetchDoc, githubBlobUrl } from '@/lib/docs';
+import GitHubLinkButton from '../GitHubLinkButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,17 +18,12 @@ export default async function ReadmePage() {
         <div className="page-eyebrow">📘 Repo overview</div>
         <h1 className="page-title plain">README</h1>
         <p className="page-subtitle">
-          Project overview, layout, contribution paths. Renders the live
-          file from the GitHub repo —{' '}
-          <a
-            className="text-link"
-            href={githubBlobUrl('README.md')}
-            target="_blank"
-            rel="noreferrer"
-          >
-            view source on GitHub →
-          </a>
+          Project overview, layout, contribution paths. The live file
+          renders below.
         </p>
+        <div style={{ marginTop: 14 }}>
+          <GitHubLinkButton href={githubBlobUrl('README.md')} label="View on GitHub" />
+        </div>
       </header>
       <article className="rule-body">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>

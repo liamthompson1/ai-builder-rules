@@ -1,34 +1,50 @@
-export default function Page() {
+import Link from 'next/link';
+import { CATEGORIES, GOLDEN } from '@/lib/categories';
+import { listAllRules } from '@/lib/rules';
+
+export default async function HomePage() {
+  const all = await listAllRules().catch(() => []);
+  const goldenCount = all.filter((r) => r.golden).length;
+  const byCategory = Object.fromEntries(
+    CATEGORIES.map((c) => [c.slug, all.filter((r) => r.category === c.slug).length])
+  );
+
   return (
-    <main
-      style={{
-        textAlign: 'center',
-        padding: '2rem',
-      }}
-    >
-      <h1
-        style={{
-          fontSize: 'clamp(2.5rem, 8vw, 5rem)',
-          fontWeight: 700,
-          letterSpacing: '-0.02em',
-          margin: 0,
-          background:
-            'linear-gradient(120deg, #a855f7, #6366f1, #38bdf8)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-        }}
-      >
-        Ready to build?
-      </h1>
-      <p
-        style={{
-          marginTop: '1.25rem',
-          fontSize: '1.125rem',
-          color: '#94a3b8',
-        }}
-      >
-        ai-builder-rules placeholder · Next.js on Heroku
-      </p>
-    </main>
+    <>
+      <header className="page-header">
+        <div className="page-eyebrow">Library</div>
+        <h1 className="page-title">Ready to build?</h1>
+        <p className="page-subtitle">
+          A library of rules for building AI-driven UI. Browse by category, or
+          jump straight to the {GOLDEN.label.toLowerCase()} — the
+          non-negotiables that cut across everything.
+        </p>
+      </header>
+
+      <div className="cards">
+        {CATEGORIES.map((c) => (
+          <Link key={c.slug} href={`/${c.slug}`} className="cat-card" style={{ textDecoration: 'none' }}>
+            <span className="cat-card-icon">{c.icon}</span>
+            <h2 className="cat-card-title">{c.label}</h2>
+            <p className="cat-card-desc">{c.description}</p>
+            <div className="cat-card-count">
+              {byCategory[c.slug] || 0} {byCategory[c.slug] === 1 ? 'rule' : 'rules'}
+            </div>
+          </Link>
+        ))}
+        <Link href="/golden" className="cat-card golden" style={{ textDecoration: 'none' }}>
+          <span className="cat-card-icon">{GOLDEN.icon}</span>
+          <h2 className="cat-card-title">{GOLDEN.label}</h2>
+          <p className="cat-card-desc">{GOLDEN.description}</p>
+          <div className="cat-card-count">
+            {goldenCount} {goldenCount === 1 ? 'rule' : 'rules'}
+          </div>
+        </Link>
+      </div>
+
+      <div style={{ marginTop: 36 }}>
+        <Link href="/new" className="btn">+ Add a rule</Link>
+      </div>
+    </>
   );
 }

@@ -1,8 +1,8 @@
 {
   "name": "ai-builder-rules",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "private": true,
-  "description": "Placeholder Next.js app for ai-builder-rules.",
+  "description": "Rules for building AI-driven UI — Transform, Flow, Intent, Visual Elements + Golden Rules.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,7 +11,10 @@
   "dependencies": {
     "next": "16.2.6",
     "react": "19.2.6",
-    "react-dom": "19.2.6"
+    "react-dom": "19.2.6",
+    "gray-matter": "^4.0.3",
+    "react-markdown": "^9.1.0",
+    "remark-gfm": "^4.0.0"
   },
   "engines": {
     "node": "22.x"

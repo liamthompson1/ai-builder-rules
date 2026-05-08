@@ -1,26 +1,23 @@
+import './globals.css';
+import Sidebar from './Sidebar';
+
 export const metadata = {
-  title: 'Ready to build?',
-  description: 'ai-builder-rules placeholder',
+  title: {
+    default: 'AI Builder Rules',
+    template: '%s · AI Builder Rules',
+  },
+  description:
+    'A library of rules for building AI-driven UI — Transform, Flow, Intent, Visual Elements, plus the Golden Rules.',
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        style={{
-          margin: 0,
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background:
-            'radial-gradient(circle at 30% 20%, #1f2937, #0f172a 70%)',
-          color: '#f8fafc',
-          fontFamily:
-            '-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Helvetica, Arial, sans-serif',
-        }}
-      >
-        {children}
+      <body>
+        <div className="layout">
+          <Sidebar />
+          <main className="main">{children}</main>
+        </div>
       </body>
     </html>
   );

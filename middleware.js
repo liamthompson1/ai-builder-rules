@@ -12,13 +12,16 @@ const CANONICAL_HOST = 'www.holidayextras.com';
 const PUBLIC_PATHS = ['/sign-in', '/api/auth'];
 
 // When testing directly on the herokuapp.com hostname, redirect to that
-// same host so the dev workflow doesn't bounce to www.holidayextras.com.
-// Browsers reaching us via Cloudflare arrive with host already rewritten
-// to *.herokuapp.com (Heroku's router does that), so for those we can't
-// detect "you came from www" — default to the canonical host.
+// same host so the dev workflow doesn't bounce to www. But: Heroku's router
+// rewrites Host to *.herokuapp.com even for requests forwarded via
+// Cloudflare. We detect "came via Cloudflare" by the cf-ray header — it's
+// only present when CF is in the chain. No cf-ray + heroku host = direct
+// curl/dev hit; cf-ray = real user, use the canonical host so they don't
+// land on the herokuapp domain.
 function pickHost(req) {
   const host = req.headers.get('host') || '';
-  if (host.endsWith('.herokuapp.com')) return host;
+  const viaCloudflare = !!req.headers.get('cf-ray');
+  if (host.endsWith('.herokuapp.com') && !viaCloudflare) return host;
   return CANONICAL_HOST;
 }
 

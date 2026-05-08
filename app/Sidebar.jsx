@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { CATEGORIES, GOLDEN } from '@/lib/categories';
 
-// Server component. We don't highlight the active link here (would need
-// usePathname which forces client component) — the page header is enough
-// to tell the user where they are.
+// Server component. Active-link highlighting would require usePathname
+// (client component); the page header already conveys location.
+//
+// Order: Groups (primary lens) → Categories → Golden Rules → Add a rule.
 
 export default function Sidebar() {
   return (
@@ -12,6 +13,13 @@ export default function Sidebar() {
         <span className="brand-mark">⚡</span>
         AI Builder Rules
       </Link>
+
+      <nav className="nav-section">
+        <Link href="/groups" className="nav-link group-link">
+          <span className="nav-icon">🧰</span>
+          Groups
+        </Link>
+      </nav>
 
       <nav className="nav-section">
         <div className="nav-label">Categories</div>

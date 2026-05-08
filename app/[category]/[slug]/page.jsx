@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { getCategory } from '@/lib/categories';
 import { getRule } from '@/lib/rules';
+import { listGroupsContainingRule } from '@/lib/groups';
 import NotFoundView from '../../NotFoundView';
 import DeleteRuleButton from '../../DeleteRuleButton';
 
@@ -39,6 +40,7 @@ export default async function RulePage({ params }) {
   }
 
   const { meta, body } = rule;
+  const groups = await listGroupsContainingRule(category, slug).catch(() => []);
 
   return (
     <>
@@ -72,6 +74,41 @@ export default async function RulePage({ params }) {
       <article className="rule-body">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
       </article>
+
+      {groups.length > 0 ? (
+        <section
+          style={{
+            marginTop: 40,
+            paddingTop: 20,
+            borderTop: '1px solid var(--line)',
+          }}
+        >
+          <h2
+            style={{
+              fontSize: 13,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              color: 'var(--fg-3)',
+              fontWeight: 500,
+              margin: '0 0 12px',
+            }}
+          >
+            🧰 Used in {groups.length === 1 ? 'this group' : `these ${groups.length} groups`}
+          </h2>
+          <div className="rule-tags">
+            {groups.map((g) => (
+              <Link
+                key={g.slug}
+                href={`/groups/${g.slug}`}
+                className="tag"
+                style={{ textDecoration: 'none' }}
+              >
+                🧰 {g.name}
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <div
         style={{

@@ -175,6 +175,15 @@ button {
   border-color: var(--accent-3);
 }
 
+.nav-link.group-link {
+  font-weight: 600;
+  color: var(--fg-0);
+  background: rgba(168, 85, 247, 0.06);
+}
+.nav-link.group-link:hover {
+  background: rgba(168, 85, 247, 0.12);
+}
+
 .nav-icon {
   display: inline-flex;
   width: 20px;
@@ -571,6 +580,48 @@ button {
 .upload-drop p {
   margin: 4px 0;
   color: var(--fg-2);
+}
+
+/* Group rule picker */
+.group-cat-picker {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+.group-cat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+  letter-spacing: -0.005em;
+}
+.group-rule-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.group-rule-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--fg-1);
+  cursor: pointer;
+  line-height: 1.4;
+  transition: background 0.1s;
+}
+.group-rule-check:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+.group-rule-check input {
+  margin-top: 3px;
+  flex-shrink: 0;
+  accent-color: var(--accent);
 }
 
 .muted {

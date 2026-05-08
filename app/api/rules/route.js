@@ -1,6 +1,11 @@
 import matter from 'gray-matter';
 import { commitFile, fileExists } from '@/lib/github';
 import { CATEGORY_SLUGS } from '@/lib/categories';
+import {
+  normalizeStrictness,
+  normalizeAppliesTo,
+  normalizeRelated,
+} from '@/lib/schema';
 
 // Force Node runtime — gray-matter and Buffer aren't supported on edge.
 export const runtime = 'nodejs';
@@ -16,11 +21,27 @@ function slugify(s) {
     .slice(0, 80);
 }
 
-function buildMarkdown({ title, summary, golden, tags, body, created }) {
+function buildMarkdown({
+  title,
+  summary,
+  golden,
+  strictness,
+  applies_to,
+  related,
+  tags,
+  body,
+  created,
+}) {
   const fm = { title };
   if (summary) fm.summary = summary;
   fm.golden = !!golden;
+  // Schema fields for AI consumption — emit even when default so the
+  // schema is visible at a glance in any rule file.
+  fm.strictness = normalizeStrictness(strictness);
+  fm.applies_to = normalizeAppliesTo(applies_to);
   if (tags && tags.length) fm.tags = tags;
+  const rel = normalizeRelated(related);
+  if (rel.length) fm.related = rel;
   fm.created = created || new Date().toISOString().slice(0, 10);
   return matter.stringify(body || '', fm);
 }
@@ -46,6 +67,9 @@ export async function POST(req) {
     title,
     summary,
     golden,
+    strictness,
+    applies_to,
+    related,
     tags,
     body,
     raw,
@@ -67,6 +91,9 @@ export async function POST(req) {
     title = title || parsed.data.title;
     summary = summary ?? parsed.data.summary;
     golden = golden ?? parsed.data.golden;
+    strictness = strictness ?? parsed.data.strictness;
+    applies_to = applies_to ?? parsed.data.applies_to;
+    related = related ?? parsed.data.related;
     tags = tags ?? parsed.data.tags;
     category = category || parsed.data.category;
     body = parsed.content;
@@ -107,6 +134,9 @@ export async function POST(req) {
     title: String(title).trim(),
     summary: summary ? String(summary).trim() : '',
     golden: !!golden,
+    strictness,
+    applies_to,
+    related,
     tags: asTagsArray(tags),
     body: String(body),
   });

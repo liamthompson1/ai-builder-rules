@@ -45,6 +45,7 @@ export default async function EditGroupPage({ params }) {
           slug: g.slug,
           name: g.name,
           description: g.description,
+          when: g.when,
           rules: g.rules,
           body: g.body,
         }}

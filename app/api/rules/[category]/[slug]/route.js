@@ -3,15 +3,34 @@ import { revalidateTag } from 'next/cache';
 import { getFile, updateFile, deleteFile } from '@/lib/github';
 import { CATEGORY_SLUGS } from '@/lib/categories';
 import { listAllGroups } from '@/lib/groups';
+import {
+  normalizeStrictness,
+  normalizeAppliesTo,
+  normalizeRelated,
+} from '@/lib/schema';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-function buildMarkdown({ title, summary, golden, tags, body, created }) {
+function buildMarkdown({
+  title,
+  summary,
+  golden,
+  strictness,
+  applies_to,
+  related,
+  tags,
+  body,
+  created,
+}) {
   const fm = { title };
   if (summary) fm.summary = summary;
   fm.golden = !!golden;
+  fm.strictness = normalizeStrictness(strictness);
+  fm.applies_to = normalizeAppliesTo(applies_to);
   if (tags && tags.length) fm.tags = tags;
+  const rel = normalizeRelated(related);
+  if (rel.length) fm.related = rel;
   if (created) fm.created = created;
   return matter.stringify(body || '', fm);
 }
@@ -102,7 +121,7 @@ export async function PUT(req, { params }) {
     return Response.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  const { title, summary, golden, tags, body } = payload;
+  const { title, summary, golden, strictness, applies_to, related, tags, body } = payload;
   if (!title || !String(title).trim()) {
     return Response.json({ error: 'Title is required' }, { status: 400 });
   }
@@ -133,6 +152,9 @@ export async function PUT(req, { params }) {
     title: String(title).trim(),
     summary: summary ? String(summary).trim() : '',
     golden: !!golden,
+    strictness,
+    applies_to,
+    related,
     tags: asTagsArray(tags),
     body: String(body),
     created,

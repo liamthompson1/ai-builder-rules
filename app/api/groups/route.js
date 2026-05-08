@@ -25,9 +25,10 @@ function normalizeRules(input) {
   return out;
 }
 
-function buildGroupMd({ name, description, rules, body, created }) {
+function buildGroupMd({ name, description, when, rules, body, created }) {
   const fm = { name };
   if (description) fm.description = description;
+  if (when && when.trim()) fm.when = when.trim();
   fm.rules = rules;
   fm.created = created || new Date().toISOString().slice(0, 10);
   return matter.stringify(body || '', fm);
@@ -45,6 +46,7 @@ export async function POST(req) {
     name,
     slug: customSlug,
     description = '',
+    when = '',
     rules,
     body = '',
   } = payload;
@@ -79,6 +81,7 @@ export async function POST(req) {
   const md = buildGroupMd({
     name: String(name).trim(),
     description: String(description).trim(),
+    when: typeof when === 'string' ? when : '',
     rules: normalizeRules(rules),
     body: String(body),
   });

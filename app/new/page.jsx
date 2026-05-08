@@ -1,11 +1,15 @@
+import { listAllRules } from '@/lib/rules';
 import AddRuleForm from './AddRuleForm';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: 'Add a rule',
   description: 'Contribute a new rule to the library.',
 };
 
-export default function NewRulePage() {
+export default async function NewRulePage() {
+  const allRules = await listAllRules().catch(() => []);
   return (
     <>
       <header className="page-header">
@@ -19,7 +23,7 @@ export default function NewRulePage() {
         </p>
       </header>
 
-      <AddRuleForm />
+      <AddRuleForm allRules={allRules} />
     </>
   );
 }

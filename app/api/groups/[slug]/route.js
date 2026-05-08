@@ -15,9 +15,10 @@ function normalizeRules(input) {
   return out;
 }
 
-function buildGroupMd({ name, description, rules, body, created }) {
+function buildGroupMd({ name, description, when, rules, body, created }) {
   const fm = { name };
   if (description) fm.description = description;
+  if (when && when.trim()) fm.when = when.trim();
   fm.rules = rules;
   if (created) fm.created = created;
   return matter.stringify(body || '', fm);
@@ -43,7 +44,7 @@ export async function PUT(req, { params }) {
     return Response.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  const { name, description = '', rules, body = '' } = payload;
+  const { name, description = '', when = '', rules, body = '' } = payload;
   if (!name || !String(name).trim()) {
     return Response.json({ error: 'Name is required' }, { status: 400 });
   }
@@ -69,6 +70,7 @@ export async function PUT(req, { params }) {
   const md = buildGroupMd({
     name: String(name).trim(),
     description: String(description).trim(),
+    when: typeof when === 'string' ? when : '',
     rules: normalizeRules(rules),
     body: String(body),
     created,

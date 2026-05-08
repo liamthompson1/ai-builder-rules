@@ -14,6 +14,7 @@ export default function GroupForm({ mode = 'create', initial = {}, allRules = []
 
   const [name, setName] = useState(initial.name || '');
   const [description, setDescription] = useState(initial.description || '');
+  const [when, setWhen] = useState(initial.when || '');
   const [body, setBody] = useState(initial.body || '');
   const [selections, setSelections] = useState(() => {
     const init = {};
@@ -60,6 +61,7 @@ export default function GroupForm({ mode = 'create', initial = {}, allRules = []
         body: JSON.stringify({
           name: name.trim(),
           description: description.trim(),
+          when: when.trim(),
           rules,
           body,
         }),
@@ -147,6 +149,16 @@ export default function GroupForm({ mode = 'create', initial = {}, allRules = []
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="When you'd reach for this group."
+          />
+        </div>
+
+        <div className="field">
+          <label>When to use (for AI agents)</label>
+          <textarea
+            value={when}
+            onChange={(e) => setWhen(e.target.value)}
+            placeholder={'A precise trigger an agent can match on.\n\ne.g. "You are designing onboarding, an empty state for a brand-new user, or the first 1–3 screens of a guided flow where the user has not committed yet."'}
+            style={{ minHeight: 100 }}
           />
         </div>
 

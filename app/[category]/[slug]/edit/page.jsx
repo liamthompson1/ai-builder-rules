@@ -1,5 +1,5 @@
 import { getCategory } from '@/lib/categories';
-import { getRule } from '@/lib/rules';
+import { getRule, listAllRules } from '@/lib/rules';
 import { listAllGroups } from '@/lib/groups';
 import EditRuleForm from './EditRuleForm';
 import NotFoundView from '../../../NotFoundView';
@@ -39,7 +39,10 @@ export default async function EditPage({ params }) {
     );
   }
 
-  const allGroups = await listAllGroups().catch(() => []);
+  const [allGroups, allRules] = await Promise.all([
+    listAllGroups().catch(() => []),
+    listAllRules().catch(() => []),
+  ]);
   const initialGroupSlugs = allGroups
     .filter((g) => (g.rules?.[category] || []).includes(slug))
     .map((g) => g.slug);
@@ -64,11 +67,15 @@ export default async function EditPage({ params }) {
           title: rule.meta.title,
           summary: rule.meta.summary,
           golden: rule.meta.golden,
+          strictness: rule.meta.strictness,
+          applies_to: rule.meta.applies_to,
+          related: rule.meta.related,
           tags: rule.meta.tags,
           body: rule.body,
           groupSlugs: initialGroupSlugs,
         }}
         allGroups={allGroups}
+        allRules={allRules}
       />
     </>
   );

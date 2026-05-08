@@ -59,21 +59,76 @@ export default async function RulePage({ params }) {
               <span style={{ color: 'var(--gold)' }}>⭐ Golden</span>
             </>
           ) : null}
+          {meta.strictness && meta.strictness !== 'should' ? (
+            <>
+              {' · '}
+              <span
+                style={{
+                  color: meta.strictness === 'must' ? 'var(--danger-fg)' : 'var(--fg-muted)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  fontWeight: 600,
+                }}
+              >
+                {meta.strictness}
+              </span>
+            </>
+          ) : null}
         </div>
         <h1 className="page-title plain">{meta.title}</h1>
         {meta.summary ? <p className="page-subtitle">{meta.summary}</p> : null}
-        {meta.tags.length ? (
-          <div className="rule-tags" style={{ marginTop: 14 }}>
-            {meta.tags.map((t) => (
-              <span key={t} className="tag">#{t}</span>
-            ))}
-          </div>
-        ) : null}
+        <div className="rule-tags" style={{ marginTop: 14, gap: 6 }}>
+          {meta.applies_to?.length && !(meta.applies_to.length === 1 && meta.applies_to[0] === 'any')
+            ? meta.applies_to.map((a) => (
+                <span key={`at-${a}`} className="tag" title="applies_to">
+                  {a}
+                </span>
+              ))
+            : null}
+          {meta.tags.map((t) => (
+            <span key={`tag-${t}`} className="tag">#{t}</span>
+          ))}
+        </div>
       </header>
 
       <article className="rule-body">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
       </article>
+
+      {meta.related?.length ? (
+        <section
+          style={{
+            marginTop: 32,
+            paddingTop: 16,
+            borderTop: '1px solid var(--border-muted)',
+          }}
+        >
+          <h2
+            style={{
+              fontSize: 13,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              color: 'var(--fg-muted)',
+              fontWeight: 500,
+              margin: '0 0 10px',
+            }}
+          >
+            Related
+          </h2>
+          <div className="rule-tags">
+            {meta.related.map((r) => (
+              <Link
+                key={r}
+                href={`/${r}`}
+                className="tag"
+                style={{ textDecoration: 'none' }}
+              >
+                {r}
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {groups.length > 0 ? (
         <section

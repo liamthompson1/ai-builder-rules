@@ -50,6 +50,35 @@ export default async function GroupPage({ params }) {
         {g.description ? <p className="page-subtitle">{g.description}</p> : null}
       </header>
 
+      {g.when && g.when.trim() ? (
+        <div
+          style={{
+            background: 'var(--canvas-subtle)',
+            border: '1px solid var(--border-default)',
+            borderLeft: '3px solid var(--accent-emphasis)',
+            borderRadius: 'var(--radius-md)',
+            padding: '12px 16px',
+            margin: '0 0 24px',
+          }}
+        >
+          <div
+            style={{
+              fontSize: 11,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              color: 'var(--fg-muted)',
+              fontWeight: 600,
+              marginBottom: 6,
+            }}
+          >
+            When to apply
+          </div>
+          <p style={{ margin: 0, fontSize: 14, color: 'var(--fg-default)', whiteSpace: 'pre-wrap' }}>
+            {g.when}
+          </p>
+        </div>
+      ) : null}
+
       {g.body && g.body.trim() ? (
         <article className="rule-body" style={{ marginTop: 16 }}>
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{g.body}</ReactMarkdown>

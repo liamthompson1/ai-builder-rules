@@ -1,3 +1,4 @@
+import { BASE_PATH } from '@/lib/paths';
 import SignInButton from './SignInButton';
 
 // Full-screen centered sign-in card. Stripped to brand mark + title +
@@ -25,24 +26,24 @@ export default function SignInCard({ callbackUrl, error }) {
           padding: '32px 28px',
         }}
       >
-        <div
-          className="brand-mark"
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={`${BASE_PATH}/holiday-extras-logo.svg`}
+          alt="Holiday Extras"
           style={{
-            width: 48,
-            height: 48,
-            fontSize: 22,
-            margin: '0 auto 14px',
-            borderRadius: 12,
+            height: 40,
+            width: 'auto',
+            display: 'block',
+            margin: '0 auto 12px',
           }}
-        >
-          ⚡
-        </div>
+        />
         <h1
           style={{
-            fontSize: 20,
+            fontSize: 16,
             margin: '0 0 24px',
-            fontWeight: 600,
-            letterSpacing: '-0.01em',
+            fontWeight: 500,
+            letterSpacing: '-0.005em',
+            color: 'var(--fg-muted)',
           }}
         >
           AI Builder Rules

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { CATEGORIES, GOLDEN } from '@/lib/categories';
 import { listAllGroups } from '@/lib/groups';
+import { BASE_PATH } from '@/lib/paths';
 import SidebarTree from './SidebarTree';
 import UserChip from './UserChip';
 
@@ -12,9 +13,14 @@ export default async function Sidebar() {
   const groups = await listAllGroups().catch(() => []);
   return (
     <aside className="sidebar">
-      <Link href="/" className="brand">
-        <span className="brand-mark">⚡</span>
-        AI Builder Rules
+      <Link href="/" className="brand brand-stacked">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={`${BASE_PATH}/holiday-extras-logo.svg`}
+          alt="Holiday Extras"
+          style={{ height: 28, width: 'auto', display: 'block' }}
+        />
+        <span className="brand-sub">AI Builder Rules</span>
       </Link>
 
       <SidebarTree groups={groups} />

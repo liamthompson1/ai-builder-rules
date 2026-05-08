@@ -1,5 +1,6 @@
 import { getCategory } from '@/lib/categories';
 import { getRule } from '@/lib/rules';
+import { listAllGroups } from '@/lib/groups';
 import EditRuleForm from './EditRuleForm';
 import NotFoundView from '../../../NotFoundView';
 
@@ -38,6 +39,11 @@ export default async function EditPage({ params }) {
     );
   }
 
+  const allGroups = await listAllGroups().catch(() => []);
+  const initialGroupSlugs = allGroups
+    .filter((g) => (g.rules?.[category] || []).includes(slug))
+    .map((g) => g.slug);
+
   return (
     <>
       <header className="page-header">
@@ -60,7 +66,9 @@ export default async function EditPage({ params }) {
           golden: rule.meta.golden,
           tags: rule.meta.tags,
           body: rule.body,
+          groupSlugs: initialGroupSlugs,
         }}
+        allGroups={allGroups}
       />
     </>
   );

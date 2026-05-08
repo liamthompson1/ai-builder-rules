@@ -39,6 +39,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   // figure out the canonical URL from request headers rather than baking
   // one in.
   trustHost: true,
+  // Next.js basePath (/ai-builder-rules) is normally stripped before our
+  // route handler runs, so Auth.js would see /api/auth/<action>. But for
+  // OAuth redirect-URI generation it needs to know the *full* path so it
+  // tells Google to call https://host/ai-builder-rules/api/auth/callback
+  // /google. We set the full path here AND rewrite incoming requests in
+  // the route handler to add the basePath back, so URL parsing matches.
+  basePath: '/ai-builder-rules/api/auth',
   secret: process.env.AUTH_SECRET || 'dev-only-not-for-production',
   providers,
   // We deliberately don't set pages.signIn / pages.error: Auth.js v5 strips

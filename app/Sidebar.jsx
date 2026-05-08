@@ -36,6 +36,18 @@ export default async function Sidebar() {
         </Link>
       </nav>
 
+      <nav className="nav-section" aria-label="Docs">
+        <div className="nav-label">Docs</div>
+        <Link href="/readme" className="nav-link">
+          <span className="nav-icon">📘</span>
+          <span className="tree-name">README</span>
+        </Link>
+        <Link href="/agents" className="nav-link">
+          <span className="nav-icon">🤖</span>
+          <span className="tree-name">AGENTS.md</span>
+        </Link>
+      </nav>
+
       <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
         <nav className="nav-section">
           <Link href="/new" className="nav-link new">

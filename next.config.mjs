@@ -4,18 +4,12 @@ const nextConfig = {
   // this Heroku app, so we serve the whole site under that prefix.
   basePath: '/ai-builder-rules',
 
-  // Server Actions enforce an Origin / X-Forwarded-Host match for CSRF
-  // protection. Heroku's router rewrites x-forwarded-host to the *.herokuapp
-  // hostname before our app sees the request, so when the browser is on
-  // holidayextras.com the two don't match. Allowlist the public-facing hosts.
-  serverActions: {
-    allowedOrigins: [
-      'www.holidayextras.com',
-      'holidayextras.com',
-      'www.holidayextras.co.uk',
-      'build-rules-2cc3a555fb8c.herokuapp.com',
-    ],
-  },
+  // Note: we deliberately don't use Server Actions for sign-in/sign-out.
+  // Heroku's router rewrites x-forwarded-host to the *.herokuapp hostname,
+  // which trips Next.js's Server Actions Origin check whenever the browser
+  // is on holidayextras.com. The sign-in/out flow goes through next-auth/
+  // react's client signIn/signOut helpers, which POST to the regular auth
+  // API routes — no Origin check, no allowedOrigins config required.
 
   async redirects() {
     return [

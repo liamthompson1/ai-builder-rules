@@ -1,8 +1,10 @@
 import { auth } from './auth';
 import { NextResponse } from 'next/server';
 
-// Public paths the middleware lets through unauthenticated.
-const PUBLIC_PATHS = ['/login', '/api/auth'];
+// Public paths the middleware lets through unauthenticated. We use /sign-in
+// rather than /login to avoid colliding with the parent holidayextras.com
+// /login.html page when Auth.js redirects.
+const PUBLIC_PATHS = ['/sign-in', '/api/auth'];
 
 export default auth((req) => {
   // Until the operator has wired up AUTH_SECRET + Google OAuth credentials,
@@ -26,7 +28,7 @@ export default auth((req) => {
     // Redirect to /login (basePath-aware via nextUrl.basePath) and remember
     // the target so we can bounce back after sign-in.
     const basePath = nextUrl.basePath || '';
-    const loginUrl = new URL(`${basePath}/login`, nextUrl.origin);
+    const loginUrl = new URL(`${basePath}/sign-in`, nextUrl.origin);
     const redirectTo = path + (nextUrl.search || '');
     if (redirectTo && redirectTo !== '/' && redirectTo !== '/login') {
       loginUrl.searchParams.set('callbackUrl', redirectTo);
@@ -34,8 +36,8 @@ export default auth((req) => {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Already signed in? Don't show the login page.
-  if (session && path === '/login') {
+  // Already signed in? Don't show the sign-in page.
+  if (session && path === '/sign-in') {
     const basePath = nextUrl.basePath || '';
     return NextResponse.redirect(new URL(`${basePath}/`, nextUrl.origin));
   }

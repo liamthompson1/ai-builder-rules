@@ -41,9 +41,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
   secret: process.env.AUTH_SECRET || 'dev-only-not-for-production',
   providers,
+  // Auth.js's redirect builder only joins the request host with pages.signIn,
+  // dropping any path from AUTH_URL — so we hardcode the full path here
+  // (basePath included) to avoid landing on the parent site's /login.html.
   pages: {
-    signIn: '/login',
-    error: '/login',
+    signIn: '/ai-builder-rules/sign-in',
+    error: '/ai-builder-rules/sign-in',
   },
   callbacks: {
     async signIn({ profile }) {

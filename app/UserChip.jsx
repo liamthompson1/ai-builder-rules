@@ -1,8 +1,12 @@
-import { auth, signOut, isAuthConfigured } from '@/auth';
+import { auth, isAuthConfigured } from '@/auth';
+import SignOutButton from './SignOutButton';
 
 // Renders the signed-in user's avatar/email + sign-out button at the bottom
 // of the sidebar. Returns null when auth isn't configured (so the sidebar
-// doesn't reserve empty space) or when there's no session.
+// doesn't reserve empty space) or when there's no session. The sign-out
+// button is a client component so it goes via /api/auth/signout (regular
+// API route) rather than a Server Action — Server Actions don't survive
+// the holidayextras.com/Cloudflare host-rewrite chain.
 
 export default async function UserChip() {
   if (!isAuthConfigured) return null;
@@ -86,29 +90,7 @@ export default async function UserChip() {
           ) : null}
         </div>
       </div>
-      <form
-        action={async () => {
-          'use server';
-          await signOut({ redirectTo: '/login' });
-        }}
-      >
-        <button
-          type="submit"
-          className="nav-link"
-          style={{
-            width: '100%',
-            background: 'transparent',
-            border: 'none',
-            cursor: 'pointer',
-            textAlign: 'left',
-            color: 'var(--fg-muted)',
-            fontSize: 13,
-          }}
-        >
-          <span className="nav-icon">↪</span>
-          <span className="tree-name">Sign out</span>
-        </button>
-      </form>
+      <SignOutButton />
     </div>
   );
 }

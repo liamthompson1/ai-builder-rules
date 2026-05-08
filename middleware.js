@@ -1,65 +1,75 @@
-import { auth } from './auth';
 import { NextResponse } from 'next/server';
+import { auth } from './auth';
 
-// Public paths the middleware lets through unauthenticated. We use /sign-in
-// rather than /login to avoid colliding with the parent holidayextras.com
-// /login.html page when Auth.js redirects.
+// We deliberately *don't* wrap this middleware with `auth(...)` (the helper
+// Auth.js exports) because that wrapper rewrites the Location header on
+// every response — using AUTH_URL's host and dropping its basePath. Instead
+// we call `auth()` standalone to read the JWT session, and emit redirect
+// responses ourselves with the basePath baked into the path explicitly.
+
+const APP_BASE_PATH = '/ai-builder-rules';
+const CANONICAL_HOST = 'www.holidayextras.com';
 const PUBLIC_PATHS = ['/sign-in', '/api/auth'];
 
-export default auth((req) => {
-  // Until the operator has wired up AUTH_SECRET + Google OAuth credentials,
-  // skip the gate entirely so the app remains usable. The moment all three
-  // env vars are set on Heroku, the gate flips on automatically.
+// When testing directly on the herokuapp.com hostname, redirect to that
+// same host so the dev workflow doesn't bounce to www.holidayextras.com.
+// Browsers reaching us via Cloudflare arrive with host already rewritten
+// to *.herokuapp.com (Heroku's router does that), so for those we can't
+// detect "you came from www" — default to the canonical host.
+function pickHost(req) {
+  const host = req.headers.get('host') || '';
+  if (host.endsWith('.herokuapp.com')) return host;
+  return CANONICAL_HOST;
+}
+
+function appRedirect(req, path, search = '') {
+  const target = `https://${pickHost(req)}${APP_BASE_PATH}${path}${search}`;
+  return new Response(null, { status: 307, headers: { Location: target } });
+}
+
+export default async function middleware(req) {
+  // Until OAuth is wired up, skip the gate so the app stays usable.
   if (
     !process.env.AUTH_SECRET ||
     !process.env.AUTH_GOOGLE_ID ||
     !process.env.AUTH_GOOGLE_SECRET
   ) {
-    return;
+    return NextResponse.next();
   }
 
-  const { nextUrl, auth: session } = req;
-  const path = nextUrl.pathname;
+  const path = req.nextUrl.pathname;
 
-  // Intercept Auth.js's default error redirect (e.g. AccessDenied for a
-  // non-@holidayextras.com email) and bounce to our themed sign-in page
-  // with the error preserved.
+  // Auth.js's default error page is at /api/auth/error. Bounce to our themed
+  // sign-in card with the error preserved so the user gets context (e.g.
+  // "AccessDenied" for a non-@holidayextras.com email).
   if (path === '/api/auth/error') {
-    const errCode = nextUrl.searchParams.get('error') || 'unknown';
-    const basePath = nextUrl.basePath || '';
-    return NextResponse.redirect(
-      new URL(
-        `${basePath}/sign-in?error=${encodeURIComponent(errCode)}`,
-        nextUrl.origin
-      )
-    );
+    const errCode = req.nextUrl.searchParams.get('error') || 'unknown';
+    return appRedirect(req, '/sign-in', `?error=${encodeURIComponent(errCode)}`);
   }
 
   const isPublic = PUBLIC_PATHS.some(
     (p) => path === p || path.startsWith(`${p}/`)
   );
 
+  const session = await auth();
+
   if (!session && !isPublic) {
-    // Redirect to /login (basePath-aware via nextUrl.basePath) and remember
-    // the target so we can bounce back after sign-in.
-    const basePath = nextUrl.basePath || '';
-    const loginUrl = new URL(`${basePath}/sign-in`, nextUrl.origin);
-    const redirectTo = path + (nextUrl.search || '');
-    if (redirectTo && redirectTo !== '/' && redirectTo !== '/login') {
-      loginUrl.searchParams.set('callbackUrl', redirectTo);
-    }
-    return NextResponse.redirect(loginUrl);
+    const redirectTo = path + (req.nextUrl.search || '');
+    const search =
+      redirectTo && redirectTo !== '/' && redirectTo !== '/sign-in'
+        ? `?callbackUrl=${encodeURIComponent(redirectTo)}`
+        : '';
+    return appRedirect(req, '/sign-in', search);
   }
 
   // Already signed in? Don't show the sign-in page.
   if (session && path === '/sign-in') {
-    const basePath = nextUrl.basePath || '';
-    return NextResponse.redirect(new URL(`${basePath}/`, nextUrl.origin));
+    return appRedirect(req, '/');
   }
-});
+
+  return NextResponse.next();
+}
 
 export const config = {
-  // Skip Next.js internals and static-file requests so we don't run auth on
-  // every CSS/JS/image fetch.
   matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)'],
 };

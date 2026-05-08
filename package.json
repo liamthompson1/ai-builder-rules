@@ -1,0 +1,13 @@
+{
+  "name": "ai-builder-rules",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Placeholder app for ai-builder-rules — replaces this with the real build later.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}

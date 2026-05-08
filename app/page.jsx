@@ -1,13 +1,30 @@
 import Link from 'next/link';
+import { auth, isAuthConfigured } from '@/auth';
 import { CATEGORIES, GOLDEN } from '@/lib/categories';
 import { listAllRules } from '@/lib/rules';
+import SignInCard from './SignInCard';
 
 // Render on every request so a freshly-added rule doesn't sit behind
 // Cloudflare's 60s s-maxage. The GitHub fetch inside still caches for 60s
 // via tag-based revalidation, so this doesn't hammer the API.
 export const dynamic = 'force-dynamic';
 
-export default async function HomePage() {
+export default async function HomePage({ searchParams }) {
+  const params = (await searchParams) || {};
+
+  // When auth is wired up and the visitor isn't signed in, the home URL
+  // *is* the sign-in screen — no separate /sign-in route.
+  if (isAuthConfigured) {
+    const session = await auth().catch(() => null);
+    if (!session?.user) {
+      const callbackUrl =
+        typeof params.callbackUrl === 'string' ? params.callbackUrl : '/';
+      const error =
+        typeof params.error === 'string' ? params.error : null;
+      return <SignInCard callbackUrl={callbackUrl} error={error} />;
+    }
+  }
+
   const all = await listAllRules().catch(() => []);
   const goldenCount = all.filter((r) => r.golden).length;
   const byCategory = Object.fromEntries(

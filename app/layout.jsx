@@ -1,4 +1,5 @@
 import './globals.css';
+import { auth, isAuthConfigured } from '@/auth';
 import Sidebar from './Sidebar';
 
 export const metadata = {
@@ -10,14 +11,28 @@ export const metadata = {
     'A library of rules for building AI-driven UI — Transform, Flow, Intent, Visual Elements, plus the Golden Rules.',
 };
 
-export default function RootLayout({ children }) {
+// We make the sidebar conditional on auth: if the user isn't signed in,
+// pages render full-screen (e.g. the sign-in card on `/`) without the
+// sidebar's protected nav showing through.
+
+export default async function RootLayout({ children }) {
+  let signedIn = !isAuthConfigured;
+  if (isAuthConfigured) {
+    const session = await auth().catch(() => null);
+    signedIn = !!session?.user;
+  }
+
   return (
     <html lang="en">
       <body>
-        <div className="layout">
-          <Sidebar />
-          <main className="main">{children}</main>
-        </div>
+        {signedIn ? (
+          <div className="layout">
+            <Sidebar />
+            <main className="main">{children}</main>
+          </div>
+        ) : (
+          children
+        )}
       </body>
     </html>
   );

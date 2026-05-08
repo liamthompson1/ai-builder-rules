@@ -1,23 +1,17 @@
 import { NextResponse } from 'next/server';
 import { auth } from './auth';
 
-// We deliberately *don't* wrap this middleware with `auth(...)` (the helper
-// Auth.js exports) because that wrapper rewrites the Location header on
-// every response — using AUTH_URL's host and dropping its basePath. Instead
-// we call `auth()` standalone to read the JWT session, and emit redirect
-// responses ourselves with the basePath baked into the path explicitly.
+// Redirect unauthenticated visitors to the home URL `/` — which now
+// renders the sign-in card directly (no separate /sign-in route).
+//
+// We don't wrap with auth(); that helper rewrites Location headers, which
+// strips the basePath and clobbers our redirect targets. Read the session
+// standalone and emit raw Response redirects instead.
 
 const APP_BASE_PATH = '/ai-builder-rules';
 const CANONICAL_HOST = 'www.holidayextras.com';
-const PUBLIC_PATHS = ['/sign-in', '/api/auth'];
+const PUBLIC_PATHS = ['/api/auth'];
 
-// When testing directly on the herokuapp.com hostname, redirect to that
-// same host so the dev workflow doesn't bounce to www. But: Heroku's router
-// rewrites Host to *.herokuapp.com even for requests forwarded via
-// Cloudflare. We detect "came via Cloudflare" by the cf-ray header — it's
-// only present when CF is in the chain. No cf-ray + heroku host = direct
-// curl/dev hit; cf-ray = real user, use the canonical host so they don't
-// land on the herokuapp domain.
 function pickHost(req) {
   const host = req.headers.get('host') || '';
   const viaCloudflare = !!req.headers.get('cf-ray');
@@ -42,13 +36,16 @@ export default async function middleware(req) {
 
   const path = req.nextUrl.pathname;
 
-  // Auth.js's default error page is at /api/auth/error. Bounce to our themed
-  // sign-in card with the error preserved so the user gets context (e.g.
-  // "AccessDenied" for a non-@holidayextras.com email).
+  // Auth.js's default error page lives at /api/auth/error. Bounce to the
+  // home URL with the error preserved so the sign-in card can show it.
   if (path === '/api/auth/error') {
     const errCode = req.nextUrl.searchParams.get('error') || 'unknown';
-    return appRedirect(req, '/sign-in', `?error=${encodeURIComponent(errCode)}`);
+    return appRedirect(req, '/', `?error=${encodeURIComponent(errCode)}`);
   }
+
+  // The root path always renders fine — page.jsx itself decides whether to
+  // show the sign-in card or the authed home.
+  if (path === '/') return NextResponse.next();
 
   const isPublic = PUBLIC_PATHS.some(
     (p) => path === p || path.startsWith(`${p}/`)
@@ -58,16 +55,10 @@ export default async function middleware(req) {
 
   if (!session && !isPublic) {
     const redirectTo = path + (req.nextUrl.search || '');
-    const search =
-      redirectTo && redirectTo !== '/' && redirectTo !== '/sign-in'
-        ? `?callbackUrl=${encodeURIComponent(redirectTo)}`
-        : '';
-    return appRedirect(req, '/sign-in', search);
-  }
-
-  // Already signed in? Don't show the sign-in page.
-  if (session && path === '/sign-in') {
-    return appRedirect(req, '/');
+    const search = redirectTo
+      ? `?callbackUrl=${encodeURIComponent(redirectTo)}`
+      : '';
+    return appRedirect(req, '/', search);
   }
 
   return NextResponse.next();

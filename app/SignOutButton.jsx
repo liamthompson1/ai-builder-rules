@@ -22,7 +22,7 @@ export default function SignOutButton() {
 
       for (const [name, value] of Object.entries({
         csrfToken,
-        callbackUrl: `${BASE_PATH}/sign-in`,
+        callbackUrl: `${BASE_PATH}/`,
       })) {
         const input = document.createElement('input');
         input.type = 'hidden';

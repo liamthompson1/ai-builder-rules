@@ -1,19 +1,61 @@
 'use client';
 
-import { signIn } from 'next-auth/react';
 import { BASE_PATH } from '@/lib/paths';
 
-// Client-side signIn — POSTs to /api/auth/signin/google, no Server Actions
-// involved. The callback URL needs the basePath baked in because next-auth/
-// react isn't aware of Next.js's basePath setting.
+// We deliberately don't use `next-auth/react`'s signIn helper — it isn't
+// basePath-aware and posts to /api/auth/signin/google, which Cloudflare
+// doesn't route to this app (only /ai-builder-rules/* lives here). The
+// parent holidayextras.com site catches the request and bounces to its
+// legacy /api/auth/error.html. Instead we build the form ourselves with
+// the basePath baked in.
 
 export default function SignInButton({ callbackUrl }) {
-  const dest = `${BASE_PATH}${callbackUrl && callbackUrl !== '/' ? callbackUrl : ''}` || `${BASE_PATH}/`;
+  const dest =
+    callbackUrl && callbackUrl.startsWith('/')
+      ? `${BASE_PATH}${callbackUrl}`
+      : `${BASE_PATH}/`;
+
+  async function handleSignIn() {
+    try {
+      // Auth.js's CSRF endpoint sets the csrf cookie and returns the matching
+      // token. Both endpoints live under our basePath.
+      const csrfRes = await fetch(`${BASE_PATH}/api/auth/csrf`, {
+        credentials: 'same-origin',
+      });
+      if (!csrfRes.ok) throw new Error(`CSRF fetch failed: ${csrfRes.status}`);
+      const { csrfToken } = await csrfRes.json();
+
+      // Submit a normal HTML form so the browser follows the OAuth redirect
+      // chain naturally (302 to Google, then back to our callback).
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = `${BASE_PATH}/api/auth/signin/google`;
+      form.style.display = 'none';
+
+      for (const [name, value] of Object.entries({
+        csrfToken,
+        callbackUrl: dest,
+      })) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value;
+        form.appendChild(input);
+      }
+
+      document.body.appendChild(form);
+      form.submit();
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('Sign-in failed:', e);
+      alert('Sign-in failed. Please try again.');
+    }
+  }
 
   return (
     <button
       type="button"
-      onClick={() => signIn('google', { callbackUrl: dest })}
+      onClick={handleSignIn}
       className="btn"
       style={{ width: '100%', padding: '8px 16px' }}
     >

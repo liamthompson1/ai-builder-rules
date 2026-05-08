@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm';
 import { getCategory } from '@/lib/categories';
 import { getRule } from '@/lib/rules';
 import NotFoundView from '../../NotFoundView';
+import DeleteRuleButton from '../../DeleteRuleButton';
 
 export async function generateMetadata({ params }) {
   const { category, slug } = await params;
@@ -72,7 +73,28 @@ export default async function RulePage({ params }) {
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
       </article>
 
-      <footer className="muted" style={{ marginTop: 48, paddingTop: 20, borderTop: '1px solid var(--line)' }}>
+      <div
+        style={{
+          display: 'flex',
+          gap: 12,
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          marginTop: 40,
+          paddingTop: 20,
+          borderTop: '1px solid var(--line)',
+        }}
+      >
+        <Link className="btn secondary" href={`/${category}/${slug}/edit`}>
+          Edit
+        </Link>
+        <DeleteRuleButton
+          category={category}
+          slug={slug}
+          title={meta.title}
+        />
+      </div>
+
+      <footer className="muted" style={{ marginTop: 24 }}>
         Source: <code>{meta.path}</code>
         {meta.created ? ` · added ${meta.created}` : ''}
       </footer>

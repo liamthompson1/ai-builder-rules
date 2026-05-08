@@ -18,7 +18,7 @@ export default async function Sidebar() {
         <img
           src={`${BASE_PATH}/holiday-extras-logo.svg`}
           alt="Holiday Extras"
-          style={{ height: 28, width: 'auto', display: 'block' }}
+          style={{ height: 56, width: 'auto', display: 'block' }}
         />
         <span className="brand-sub">AI Builder Rules</span>
       </Link>

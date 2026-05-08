@@ -31,10 +31,10 @@ export default function SignInCard({ callbackUrl, error }) {
           src={`${BASE_PATH}/holiday-extras-logo.svg`}
           alt="Holiday Extras"
           style={{
-            height: 40,
+            height: 72,
             width: 'auto',
             display: 'block',
-            margin: '0 auto 12px',
+            margin: '0 auto 16px',
           }}
         />
         <h1

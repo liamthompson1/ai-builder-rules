@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { BASE_PATH } from '@/lib/paths';
 
 const CATEGORY_OPTIONS = [
   { slug: 'transform', label: '🔁 Transform' },
@@ -36,7 +38,7 @@ export default function AddRuleForm() {
     setSuccess(null);
     setSubmitting(true);
     try {
-      const res = await fetch('/api/rules', {
+      const res = await fetch(`${BASE_PATH}/api/rules`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -112,7 +114,7 @@ export default function AddRuleForm() {
           on GitHub. The list pages cache for 60s — give it a moment to appear.
         </p>
         <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-          <a className="btn" href={success.url}>View rule →</a>
+          <Link className="btn" href={success.url}>View rule →</Link>
           <button
             className="btn secondary"
             onClick={() => {

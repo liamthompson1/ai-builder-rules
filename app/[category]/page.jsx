@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { CATEGORIES, getCategory } from '@/lib/categories';
 import { listRulesByCategory } from '@/lib/rules';
 import RuleRow from '../RuleRow';
@@ -39,7 +40,7 @@ export default async function CategoryPage({ params }) {
       {rules.length === 0 ? (
         <div className="empty">
           No rules in <strong>{cat.label}</strong> yet.{' '}
-          <a href="/new" className="text-link">Add the first one →</a>
+          <Link href="/new" className="text-link">Add the first one →</Link>
         </div>
       ) : (
         <div className="rule-list">

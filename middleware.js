@@ -20,6 +20,21 @@ export default auth((req) => {
 
   const { nextUrl, auth: session } = req;
   const path = nextUrl.pathname;
+
+  // Intercept Auth.js's default error redirect (e.g. AccessDenied for a
+  // non-@holidayextras.com email) and bounce to our themed sign-in page
+  // with the error preserved.
+  if (path === '/api/auth/error') {
+    const errCode = nextUrl.searchParams.get('error') || 'unknown';
+    const basePath = nextUrl.basePath || '';
+    return NextResponse.redirect(
+      new URL(
+        `${basePath}/sign-in?error=${encodeURIComponent(errCode)}`,
+        nextUrl.origin
+      )
+    );
+  }
+
   const isPublic = PUBLIC_PATHS.some(
     (p) => path === p || path.startsWith(`${p}/`)
   );

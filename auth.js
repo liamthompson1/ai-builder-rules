@@ -41,13 +41,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
   secret: process.env.AUTH_SECRET || 'dev-only-not-for-production',
   providers,
-  // Auth.js's redirect builder only joins the request host with pages.signIn,
-  // dropping any path from AUTH_URL — so we hardcode the full path here
-  // (basePath included) to avoid landing on the parent site's /login.html.
-  pages: {
-    signIn: '/ai-builder-rules/sign-in',
-    error: '/ai-builder-rules/sign-in',
-  },
+  // We deliberately don't set pages.signIn / pages.error: Auth.js v5 strips
+  // any basePath from those paths when building redirect URLs (assuming it
+  // gets re-added, which doesn't happen with our setup), producing a bare
+  // `/sign-in` that lands on holidayextras.com's parent /login.html instead
+  // of our app. Our middleware handles redirect-to-signin itself, with the
+  // basePath baked in. Auth.js's default /api/auth/signin and
+  // /api/auth/error live under our basePath naturally — and the middleware
+  // bounces /api/auth/error to /sign-in?error=… so we keep our themed UI.
   callbacks: {
     async signIn({ profile }) {
       if (!profile?.email_verified) return false;

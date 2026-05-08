@@ -1,14 +1,14 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { getCategory } from '@/lib/categories';
 import { getRule } from '@/lib/rules';
+import NotFoundView from '../../NotFoundView';
 
 export async function generateMetadata({ params }) {
   const { category, slug } = await params;
   const rule = await getRule(category, slug).catch(() => null);
-  if (!rule) return {};
+  if (!rule) return { title: 'Not found', robots: { index: false } };
   return {
     title: rule.meta.title,
     description: rule.meta.summary || undefined,
@@ -18,10 +18,24 @@ export async function generateMetadata({ params }) {
 export default async function RulePage({ params }) {
   const { category, slug } = await params;
   const cat = getCategory(category);
-  if (!cat) notFound();
+  if (!cat) {
+    return (
+      <NotFoundView
+        title={`No category called "${category}".`}
+        subtitle="Pick one from the sidebar."
+      />
+    );
+  }
 
   const rule = await getRule(category, slug).catch(() => null);
-  if (!rule) notFound();
+  if (!rule) {
+    return (
+      <NotFoundView
+        title={`No "${slug}" in ${cat.label}.`}
+        subtitle="It might have been renamed, or never written. Pick another from the category page, or add it yourself."
+      />
+    );
+  }
 
   const { meta, body } = rule;
 

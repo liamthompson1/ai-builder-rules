@@ -2,6 +2,11 @@ import Link from 'next/link';
 import { CATEGORIES, GOLDEN } from '@/lib/categories';
 import { listAllRules } from '@/lib/rules';
 
+// Render on every request so a freshly-added rule doesn't sit behind
+// Cloudflare's 60s s-maxage. The GitHub fetch inside still caches for 60s
+// via tag-based revalidation, so this doesn't hammer the API.
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage() {
   const all = await listAllRules().catch(() => []);
   const goldenCount = all.filter((r) => r.golden).length;

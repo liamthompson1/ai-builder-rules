@@ -7,6 +7,8 @@ export const metadata = {
   description: GOLDEN.description,
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function GoldenPage() {
   const rules = await listGoldenRules().catch(() => []);
 

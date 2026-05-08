@@ -4,9 +4,9 @@ import { listRulesByCategory } from '@/lib/rules';
 import RuleRow from '../RuleRow';
 import NotFoundView from '../NotFoundView';
 
-export async function generateStaticParams() {
-  return CATEGORIES.map((c) => ({ category: c.slug }));
-}
+// Dynamic so newly-added/edited rules show up without Cloudflare serving a
+// 60s-old s-maxage'd response.
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }) {
   const { category } = await params;

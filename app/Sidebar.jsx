@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { CATEGORIES, GOLDEN } from '@/lib/categories';
 import { listAllGroups } from '@/lib/groups';
 import SidebarTree from './SidebarTree';
+import UserChip from './UserChip';
 
 // Server component. Loads the groups list once per render so the tree can
 // show counts and offer the right children. Client interactivity (expand /
@@ -35,12 +36,15 @@ export default async function Sidebar() {
         </Link>
       </nav>
 
-      <nav className="nav-section" style={{ marginTop: 'auto' }}>
-        <Link href="/new" className="nav-link new">
-          <span className="nav-icon">+</span>
-          <span className="tree-name">Add a rule</span>
-        </Link>
-      </nav>
+      <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <nav className="nav-section">
+          <Link href="/new" className="nav-link new">
+            <span className="nav-icon">+</span>
+            <span className="tree-name">Add a rule</span>
+          </Link>
+        </nav>
+        <UserChip />
+      </div>
     </aside>
   );
 }

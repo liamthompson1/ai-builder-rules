@@ -1,12 +1,14 @@
 import Link from 'next/link';
 import { CATEGORIES, GOLDEN } from '@/lib/categories';
+import { listAllGroups } from '@/lib/groups';
+import SidebarTree from './SidebarTree';
 
-// Server component. Active-link highlighting would require usePathname
-// (client component); the page header already conveys location.
-//
-// Order: Groups (primary lens) → Categories → Golden Rules → Add a rule.
+// Server component. Loads the groups list once per render so the tree can
+// show counts and offer the right children. Client interactivity (expand /
+// collapse, active-route highlight) lives in <SidebarTree>.
 
-export default function Sidebar() {
+export default async function Sidebar() {
+  const groups = await listAllGroups().catch(() => []);
   return (
     <aside className="sidebar">
       <Link href="/" className="brand">
@@ -14,19 +16,14 @@ export default function Sidebar() {
         AI Builder Rules
       </Link>
 
-      <nav className="nav-section">
-        <Link href="/groups" className="nav-link group-link">
-          <span className="nav-icon">🧰</span>
-          Groups
-        </Link>
-      </nav>
+      <SidebarTree groups={groups} />
 
-      <nav className="nav-section">
-        <div className="nav-label">Categories</div>
+      <nav className="nav-section" aria-label="All categories">
+        <div className="nav-label">All categories</div>
         {CATEGORIES.map((c) => (
           <Link key={c.slug} href={`/${c.slug}`} className="nav-link">
             <span className="nav-icon">{c.icon}</span>
-            {c.label}
+            <span className="tree-name">{c.label}</span>
           </Link>
         ))}
       </nav>
@@ -34,14 +31,14 @@ export default function Sidebar() {
       <nav className="nav-section">
         <Link href="/golden" className="nav-link golden">
           <span className="nav-icon">{GOLDEN.icon}</span>
-          {GOLDEN.label}
+          <span className="tree-name">{GOLDEN.label}</span>
         </Link>
       </nav>
 
-      <nav className="nav-section">
+      <nav className="nav-section" style={{ marginTop: 'auto' }}>
         <Link href="/new" className="nav-link new">
           <span className="nav-icon">+</span>
-          Add a rule
+          <span className="tree-name">Add a rule</span>
         </Link>
       </nav>
     </aside>

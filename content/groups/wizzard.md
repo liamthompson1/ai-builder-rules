@@ -42,6 +42,7 @@ rules:
     - bold-across-all-three-lines-marks-the-selected-result
     - is-a-step-context-bar
     - a-plain-question-becomes-the-step-subtitle
+    - a-4-column-table-of-times-becomes-a-time-grid
   flow:
     - clone-design-system-first
     - confirm-assets-with-user

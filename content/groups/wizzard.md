@@ -34,6 +34,7 @@ rules:
     - consecutive-month-tables-stack-into-a-scrollable-multi-month-calendar
     - suggested-value-reason-is-a-suggested-default-hint
     - skip-url-immediately-after-the-step-title-is-a-skip-link
+    - a-plain-source-destination-line-is-a-route-context-line
   flow:
     - clone-design-system-first
     - confirm-assets-with-user

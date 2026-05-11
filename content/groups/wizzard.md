@@ -38,6 +38,7 @@ rules:
     - question-url-is-a-help-link
     - dates-separated-by-with-bold-links-become-a-date-tab-strip
     - text-is-a-search-input-placeholder
+    - a-three-line-block-with-and-markers-is-a-search-result
   flow:
     - clone-design-system-first
     - confirm-assets-with-user

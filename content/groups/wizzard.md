@@ -43,6 +43,7 @@ rules:
     - is-a-step-context-bar
     - a-plain-question-becomes-the-step-subtitle
     - a-4-column-table-of-times-becomes-a-time-grid
+    - bold-lead-in-body-next-to-an-input-is-a-helper-card
   flow:
     - clone-design-system-first
     - confirm-assets-with-user

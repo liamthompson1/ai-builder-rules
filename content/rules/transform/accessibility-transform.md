@@ -1,5 +1,6 @@
 ---
 title: Accessibility - transform
+summary: Accessibility rules for transformations
 golden: false
 strictness: should
 applies_to:

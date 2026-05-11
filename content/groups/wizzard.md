@@ -39,6 +39,7 @@ rules:
     - dates-separated-by-with-bold-links-become-a-date-tab-strip
     - text-is-a-search-input-placeholder
     - a-three-line-block-with-and-markers-is-a-search-result
+    - bold-across-all-three-lines-marks-the-selected-result
   flow:
     - clone-design-system-first
     - confirm-assets-with-user

@@ -37,6 +37,7 @@ rules:
     - a-plain-source-destination-line-is-a-route-context-line
     - question-url-is-a-help-link
     - dates-separated-by-with-bold-links-become-a-date-tab-strip
+    - text-is-a-search-input-placeholder
   flow:
     - clone-design-system-first
     - confirm-assets-with-user

@@ -41,6 +41,7 @@ rules:
     - a-three-line-block-with-and-markers-is-a-search-result
     - bold-across-all-three-lines-marks-the-selected-result
     - is-a-step-context-bar
+    - a-plain-question-becomes-the-step-subtitle
   flow:
     - clone-design-system-first
     - confirm-assets-with-user

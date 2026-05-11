@@ -24,6 +24,7 @@ rules:
     - hero-image-markup
     - icons-fontawesome-not-emoji
     - accessibility-transform
+    - heading-opens-a-new-step
   flow:
     - clone-design-system-first
     - confirm-assets-with-user

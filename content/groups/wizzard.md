@@ -32,6 +32,7 @@ rules:
     - items-separated-by-on-one-line-become-a-horizontal-row-of-options
     - a-markdown-table-with-day-name-headers-becomes-a-calendar-month
     - consecutive-month-tables-stack-into-a-scrollable-multi-month-calendar
+    - suggested-value-reason-is-a-suggested-default-hint
   flow:
     - clone-design-system-first
     - confirm-assets-with-user

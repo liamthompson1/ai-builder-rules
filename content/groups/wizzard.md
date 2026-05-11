@@ -27,6 +27,7 @@ rules:
     - heading-opens-a-new-step
     - between-steps-is-a-step-boundary-marker
     - subheading-opens-a-labelled-section-within-a-step
+    - a-bullet-list-becomes-a-selectable-list
   flow:
     - clone-design-system-first
     - confirm-assets-with-user

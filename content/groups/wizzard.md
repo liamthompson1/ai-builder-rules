@@ -30,6 +30,7 @@ rules:
     - a-bullet-list-becomes-a-selectable-list
     - text-is-an-informational-status-line
     - items-separated-by-on-one-line-become-a-horizontal-row-of-options
+    - a-markdown-table-with-day-name-headers-becomes-a-calendar-month
   flow:
     - clone-design-system-first
     - confirm-assets-with-user

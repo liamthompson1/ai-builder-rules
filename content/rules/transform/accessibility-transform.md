@@ -4,6 +4,8 @@ golden: false
 strictness: should
 applies_to:
   - any
+tags:
+  - '#wizzard'
 created: '2026-05-11'
 ---
 

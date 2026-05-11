@@ -25,6 +25,7 @@ rules:
     - icons-fontawesome-not-emoji
     - accessibility-transform
     - heading-opens-a-new-step
+    - between-steps-is-a-step-boundary-marker
   flow:
     - clone-design-system-first
     - confirm-assets-with-user

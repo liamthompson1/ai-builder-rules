@@ -29,6 +29,7 @@ rules:
     - subheading-opens-a-labelled-section-within-a-step
     - a-bullet-list-becomes-a-selectable-list
     - text-is-an-informational-status-line
+    - items-separated-by-on-one-line-become-a-horizontal-row-of-options
   flow:
     - clone-design-system-first
     - confirm-assets-with-user

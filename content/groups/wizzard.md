@@ -40,6 +40,7 @@ rules:
     - text-is-a-search-input-placeholder
     - a-three-line-block-with-and-markers-is-a-search-result
     - bold-across-all-three-lines-marks-the-selected-result
+    - is-a-step-context-bar
   flow:
     - clone-design-system-first
     - confirm-assets-with-user

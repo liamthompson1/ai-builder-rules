@@ -1,7 +1,7 @@
 ---
 name: Wizzard
 description: Used to build a wizard flow for data collection or search.
-when: >
+when: >-
   Use this group when building a Holiday Extras wizard-style product journey — a
   mobile-first, single-question-per-screen stepped flow used across Parking,
   Insurance, Transfers, or any new HX product needing a guided quote/funnel.

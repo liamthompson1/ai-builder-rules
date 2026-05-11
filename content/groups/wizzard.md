@@ -33,6 +33,7 @@ rules:
     - a-markdown-table-with-day-name-headers-becomes-a-calendar-month
     - consecutive-month-tables-stack-into-a-scrollable-multi-month-calendar
     - suggested-value-reason-is-a-suggested-default-hint
+    - skip-url-immediately-after-the-step-title-is-a-skip-link
   flow:
     - clone-design-system-first
     - confirm-assets-with-user

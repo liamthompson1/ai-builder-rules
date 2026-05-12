@@ -46,6 +46,7 @@ rules:
     - bold-lead-in-body-next-to-an-input-is-a-helper-card
     - label-value-at-link-url-is-a-context-line-with-an-edit-link
     - search-summary
+    - wizard-state-lives-in-localstorage
   flow:
     - clone-design-system-first
     - confirm-assets-with-user
